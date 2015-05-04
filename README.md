@@ -18,7 +18,7 @@ Why us this?
 
 Demos?
 ---------------------
-[Checkout DEMOS of this one page on vmonepage.com](http://vmonepage.com)
+[Checkout DEMOS of this FREE One Page Checkout on vmonepage.com](http://vmonepage.com)
 
 Do you want to improve it?
 ---------------------
