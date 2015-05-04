@@ -1,6 +1,8 @@
 Free One Page Checkout for Virtuemart
 ====================================
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/joomlaproffs/vmonepage)
+
 What is this?
 ---------------------
 
