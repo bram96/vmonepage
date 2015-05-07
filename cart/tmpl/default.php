@@ -1476,7 +1476,7 @@ function submit_order() {
 	<?php
 	if(VmConfig::get('agree_to_tos_onorder')) {
 	?>
-  	  if(document.id('squaredOne').checked==false) 
+  	  if(document.id('squaredTwo').checked==false) 
 	  { 
 			return alert('<?php echo JText::_('COM_VIRTUEMART_CART_PLEASE_ACCEPT_TOS'); ?>');
 	  }
@@ -2035,10 +2035,10 @@ else
 
 		?>
 
-                <section title=".squaredOne">
-					    <div class="squaredOne">
-						  <?php echo VmHtml::checkbox('tos',$this->cart->squaredOne,1,0,'class="terms-of-service" id="squaredOne"'); ?>
-					      <label for="squaredOne"></label>
+                <section title=".squaredTwo">
+					    <div class="squaredTwo">
+						  <?php echo VmHtml::checkbox('tos',$this->cart->squaredTwo,1,0,'class="terms-of-service" id="squaredTwo"'); ?>
+					      <label for="squaredTwo"></label>
 					    </div>
 				 </section>
 
