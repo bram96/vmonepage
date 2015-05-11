@@ -430,8 +430,10 @@ window.addEvent('domready',function() {
     }
 
 
-
-    update_form(false);
+   if(document.id('checkoutForm') != null)
+   {
+  	  update_form(false);
+   }
 
 //document.id('system-message-container').setAttribute('style','display:none');
 jQuery(".opg-alert").hide();
@@ -1545,69 +1547,7 @@ function submit_order() {
     jQuery( "#fullerrordiv" ).html("");
 	
 
-	var register_state=true;
-
-	if(document.id('register') && document.id('register').checked==true) {
 	
-	   checkvalidation();
-
-		register_state=false;
-
-		new Request.JSON({
-
-			'url':'index.php?type=onepage&opc_task=register',
-
-			'method':'post',
-
-			'async':false,
-
-			'noCache':true,
-
-			'data':document.id('div_billto').toQueryString()+'&address_type=BT&<?php echo JSession::getFormToken(); ?>=1',
-
-			'onSuccess':function(json,text) {
-
-				if(json.error && json.error==1) {
-				
-				   erromsg = '<div data-opg-alert="" class="opg-alert"><a href="#" class="opg-alert-close opg-close"></a><p>'+json.message+'</p></div>';
-					
-					if(json.message != "")
-					{
-					  jQuery( "#fullerrordiv" ).html(erromsg);
-					} 
-					
-					 
-                     //document.getElementById('system-message-container').innerHTML = erromsg;
-					 //document.getElementById('system-message-container').style.display="block";
-					//alert(json.message);
-
-				} else {
-
-					register_state=true;
-
-				}
-
-			},
-
-			'onFailure':function(xhr) {
-
-				if(xhr.status==500); {
-
-					register_state=true;
-
-				}
-
-			}
-
-		}).send();
-
-	}
-
-	if(!register_state) {
-
-		return;
-
-	}
 
 		
 
@@ -1782,8 +1722,108 @@ function submit_order() {
 			
 
 		
+var register_state=true;
 
-	new Request.JSON({
+	if(document.id('register') && document.id('register').checked==true) {
+	
+	   checkvalidation();
+
+		register_state=false;
+
+		new Request.JSON({
+
+			'url':'index.php?type=onepage&opc_task=register',
+
+			'method':'post',
+
+			'async':false,
+
+			'noCache':true,
+
+			'data':document.id('div_billto').toQueryString()+'&address_type=BT&<?php echo JSession::getFormToken(); ?>=1',
+
+			'onSuccess':function(json,text) {
+
+				if(json.error && json.error==1) {
+				
+				   erromsg = '<div data-uk-alert="" class="uk-alert"><a href="#" class="uk-alert-close uk-close"></a><p>'+json.message+'</p></div>';
+					
+					if(json.message != "")
+					{
+					  jQuery( "#fullerrordiv" ).html(erromsg);
+					} 
+					
+					 
+                     //document.getElementById('system-message-container').innerHTML = erromsg;
+					 //document.getElementById('system-message-container').style.display="block";
+					//alert(json.message);
+
+				} else {
+					 jQuery("#modlgn-username").removeClass("uk-form-danger");
+				 	 jQuery("#modlgn-passwd").removeClass("uk-form-danger");
+					 usernameval = document.getElementById("username_field").value;
+					 passwordval = document.getElementById("password_field").value;
+					 returnurlval = document.getElementById("returnurl").value;
+					 
+					 
+				     var url= vmSiteurl+"index.php?type=onepage";
+					 url += "&opc_task=login&username=" + encodeURIComponent(usernameval) + "&passwd=" + encodeURIComponent(passwordval) + "&return=" + encodeURIComponent(returnurlval); 
+					  jQuery.ajax({
+					        	type: "POST",
+						        cache: false,
+					    	    url: url,
+						       }).done(
+									function (data, textStatus) 
+									{
+										  if(data == "error")
+										  {
+						 
+										  }
+										  else
+										  {
+											   new Request.JSON({
+													'url':'index.php?type=onepage&opc_task=set_checkout',
+													'method':'post',
+													'data':document.id('checkoutForm').toQueryString(),
+													'async':false,
+													'noCache':true,
+													'onSuccess':function(json,text) {
+													// Fucky IE adds to task 'update' for some unexpected cause
+													document.checkoutForm.task.value='confirm';
+													document.checkoutForm.submit();
+													}	
+
+												}).send();
+										  }
+							        });
+  					
+
+					register_state=true;
+
+				}
+
+			},
+
+			'onFailure':function(xhr) {
+
+				if(xhr.status==500); {
+
+					register_state=true;
+
+				}
+
+			}
+
+		}).send();
+		
+ 	 if(!register_state) {
+		return;
+	 }
+	
+   } // if register button checked else
+   else
+   {
+      new Request.JSON({
 
 		'url':'index.php?type=onepage&opc_task=set_checkout',
 
@@ -1808,14 +1848,17 @@ function submit_order() {
 		}	
 
 	}).send();
+   }
 
 }
 
 
 
 jQuery(document).ready(function($){
-
-update_form();
+	if(document.id('checkoutForm') != null)
+	{
+		update_form();
+    }
 
 });
 
