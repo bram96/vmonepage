@@ -697,9 +697,14 @@ function update_form(task,id,payment) {
 	if(!task) {
 
 		var task='update_form';
-
 	}
-	if(task  == "custom")
+	
+	if(task  == "2")
+	{
+	  var task='update_form';
+	  custask  = "yes";
+	}
+	else if(task  == "custom")
 	{
 	  var task='update_form';
 	  custask  = "yes";
@@ -1069,6 +1074,7 @@ function update_form(task,id,payment) {
 
 				    }
 					shipments+='</ul>';
+					
 					
 					if(custask  == "yes")
 					{

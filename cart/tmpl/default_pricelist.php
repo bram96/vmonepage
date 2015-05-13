@@ -360,7 +360,7 @@ update_form();
 	     echo '				<label class="' . $_field['name'] . '" for="' . $_field['name'] . '_field">' . "\n";
 	     echo '					' . $_field['title'] . ($_field['required'] ? ' *' : '') . "\n";
  	     echo '				</label>' ;
-	  	 $_field['formcode']=str_replace('<select','<select onchange="javascript:update_form();"',$_field['formcode']);
+	  	 $_field['formcode']=str_replace('<select','<select onchange="javascript:update_form(2);"',$_field['formcode']);
 		 $_field['formcode']=str_replace('vm-chzn-select','',$_field['formcode']);
 		 echo $_field['formcode'];
 	  }
