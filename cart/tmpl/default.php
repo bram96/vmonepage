@@ -49,13 +49,15 @@ JHTML::stylesheet ( 'plugins/system/onepage_generic/onepage_generic.css');
 $taskRoute = "";
 
 vmJsApi::jPrice();
-
+JHTML::script('plugins/system/onepage_generic/vmprices.js');
 require_once dirname(__FILE__).DS.'helper.php';
+
 
 $this->helper=new CartHelper();
 $this->helper->assignValues();
 $plugin=JPluginHelper::getPlugin('system','onepage_generic');
 $params=new JRegistry($plugin->params);
+
 if($params->get("buttoncolour") != "")
 {
   ?>
@@ -223,7 +225,7 @@ jQuery('#shiptopopup').on({
 	{
 	    document.id('STsameAsBT').checked = false;
     },
-    'hide.uk.modal': function(){
+      'hide.uk.modal': function(){
 	   value = validateshipto("yes");
        
 	   if(value == true)
@@ -765,11 +767,25 @@ function update_form(task,id,payment) {
 
 		'onSuccess':function(json,text) {
 
-			if(json.error) {
+			if(json.error) 
+			{
+			    if(json.errortype == 2)
+				{
+				   remove_preloader();
+				   qtytext = "#quantity_"+json.vmid;
+				   jQuery(qtytext).val(json.defaultqty);
+				   var r = '<div class="opg-margin-small-top opg-alert opg-alert-warning" data-opg-alert><a href="" class="opg-alert-close opg-close"></a><p>' + json.msg + "</p></div>";
+				   jQuery("#customerror").html("");
+				   jQuery("#customerror").show();
+				   jQuery("#customerror").html(r);
 
-				remove_preloader();
+				}
+				else
+				{
+					remove_preloader();
+					alert(json.message);
+			    }
 
-				alert(json.message);
 
 			} else {
 			
@@ -825,7 +841,8 @@ function update_form(task,id,payment) {
 									});
 
 								});
-
+								
+								update_form();
 								mod.find(".total").html(datas.billTotal);
 
 								mod.find(".show_cart").html(datas.cart_show);
@@ -1049,7 +1066,8 @@ function update_form(task,id,payment) {
 							     jQuery("#shipchangediv").remove();
 							     temptext = "";
 							  	 temptext =  '<td id="shipchangediv" class="opg-width-1-4">';
-						         temptext += '<a class="opg-button opg-button-primary" href="#shipmentdiv" data-opg-modal>';
+								  target = "{target:'#shipmentdiv'}";
+						         temptext += '<a class="opg-button opg-button-primary" href="#" data-opg-modal="'+target+'">';
 								 temptext += '<?php echo  JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE"); ?>';
 								 temptext += '</a></td>';
 								 jQuery("#shipmentrow").append(temptext);
@@ -1265,7 +1283,8 @@ function update_form(task,id,payment) {
 								     jQuery("#paychangediv").remove();
 							 	     temptext = "";
 								  	 temptext =  '<td id="paychangediv" class="opg-width-1-4">';
-							         temptext += '<a class="opg-button opg-button-primary" href="#paymentdiv" data-opg-modal>';
+									 target = "{target:'#paymentdiv'}";
+							         temptext += '<a class="opg-button opg-button-primary" href="#" data-opg-modal="'+target+'">';
 									 temptext += '<?php echo  JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE"); ?>';
 									 temptext += '</a></td>';
 									 jQuery("#paymentrow").append(temptext);
@@ -1752,7 +1771,7 @@ var register_state=true;
 
 				if(json.error && json.error==1) {
 				
-				   erromsg = '<div data-uk-alert="" class="uk-alert"><a href="#" class="uk-alert-close uk-close"></a><p>'+json.message+'</p></div>';
+				   erromsg = '<div data-opg-alert="" class="opg-alert"><a href="#" class="opg-alert-close opg-close"></a><p>'+json.message+'</p></div>';
 					
 					if(json.message != "")
 					{
@@ -1765,8 +1784,8 @@ var register_state=true;
 					//alert(json.message);
 
 				} else {
-					 jQuery("#modlgn-username").removeClass("uk-form-danger");
-				 	 jQuery("#modlgn-passwd").removeClass("uk-form-danger");
+					 jQuery("#modlgn-username").removeClass("opg-form-danger");
+				 	 jQuery("#modlgn-passwd").removeClass("opg-form-danger");
 					 usernameval = document.getElementById("username_field").value;
 					 passwordval = document.getElementById("password_field").value;
 					 returnurlval = document.getElementById("returnurl").value;
@@ -2179,7 +2198,7 @@ else
 		<input type='hidden' name='view' value='cart'/>
 	</div>
    </div>
- </div>
+
 </div> <!-- Grid-div-end -->
 </div>
 </div>

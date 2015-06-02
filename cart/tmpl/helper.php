@@ -429,12 +429,21 @@ class CartHelper {
 			$this->cart->saveAddressInCart($post,'BT', true);
 		}
 		$this->cart->saveCartFieldsInCart();
+		
+		$user = JFactory::getUser();
+		if($user->id > 0)
+		{
+      	  $post['address_type'] = 'BT';
+ 		  $userModel = VmModel::getModel('user');
+		  $userModel->storeAddress($post);
+		}
 	}
 	
 	function register() {
-		$user=VmModel::getModel('user');
+		$user = VmModel::getModel('user');
 		$user->_id=0;
 		$ret=$user->store(JRequest::get('post'));
+		
 		if(!isset($ret["success"]) || $ret["success"]==false || $ret==false) {
 			$messages=array();
 			foreach(JFactory::getApplication()->getMessageQueue() as $message) {
@@ -453,30 +462,58 @@ class CartHelper {
 			return array('error'=>1,'message'=>implode(" ",$messages));
 		}*/
 		
-		/*define('JPATH_COMPONENT',JPATH_SITE.DS.'components'.DS.'com_virtuemart');
-		require_once JPATH_SITE.DS.'components'.DS.'com_virtuemart'.DS.'controllers'.DS.'user.php';
-		$user=new VirtueMartControllerUser();
-		$ret=$user->saveData(false,true);*/
+		
+
+		
 		return $ret;
 	}
 	
 	function updateProduct() {
 	
-	$quantities = vRequest::getInt('quantity');
-		foreach($quantities as $key=>$quantity)
+	 $stockhandle = VmConfig::get('stockhandle','none');
+	 
+	 
+ 	 $quantities = JRequest::get("quantityval");
+	 $quantities = vRequest::getInt('quantityval');
+	 $stock = vRequest::getInt('stock');
+	 foreach($quantities as $key=>$quantity)
 		{
 		  if (isset($this->cart->cartProductsData[$key]) and !empty($quantity)) 
 			{
-
-		      if($quantity!= $this->cart->cartProductsData[$key]['quantity'])
+		      if($quantity != $this->cart->cartProductsData[$key]['quantity'])
 				{
+				
+				  $productsleft  = $stock[$key];
+				  if ($quantity > $productsleft )
+				  {
+					 if($productsleft>0 and ($stockhandle=='disableadd' or $stockhandle=='disableit_children') )
+					 {
+						$quantity = $productsleft;
+					    $errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_PRODUCT_OUT_OF_QUANTITY', $this->cart->products[$key]->product_name,$quantity);
+						$errorarray = array();
+						$errorarray['error'] = 1;
+						$errorarray['errortype'] = 2;
+						$errorarray['msg'] = $errorMsg;
+						$errorarray['defaultqty'] = $this->cart->cartProductsData[$key]['quantity'];
+						$errorarray['vmid'] = $this->cart->cartProductsData[$key]['virtuemart_product_id'];
+						echo json_encode($errorarray);
+						exit;
+						
+					 }
+					 else 
+					 {
+						
+					 }
+			  	  }
 
 			      $vmid = $this->cart->cartProductsData[$key]['virtuemart_product_id'];
-				  $this->cart->productsQuantity[$vmid] = $quantity;
+				  $this->cart->cartProductsData[$key]['quantity'] = $quantity;
+				 // $this->cart->productsQuantity[$vmid] = $quantity;
 				}
 			}
 		}
-		$this->cart->updateProductCart();
+		$this->cart->setCartIntoSession(true);
+		//$updated = $this->cart->updateProductCart(); 
 		
 		
 	}

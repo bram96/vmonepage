@@ -19,6 +19,31 @@ class plgSystemOnepage_generic extends JPlugin {
 	function __construct($config,$params) {
 		parent::__construct($config,$params);
 	}
+	function onBeforeCompileHead()
+	{
+	   $_option = JRequest::getString('option');
+	   $_option = JRequest::getString('option');
+	   $_view = JRequest::getString('view');
+	   $_format = JRequest::getString('format', '');
+	   $_task = JRequest::getString('task', '');
+	   $_tmpl = JRequest::getString('tmpl', '');
+	   
+	   if ($_option == 'com_virtuemart' && $_view == 'cart' && $_format != 'json') 
+		{
+		
+			$document = JFactory::getDocument();
+		 	$rootPath = JURI::root(true);
+			$arrHead = $document->getHeadData();   
+			foreach($arrHead['scripts'] as $key => $script)
+			{
+			  if(strpos($key, "js/vmprices.js") > 1)
+			  {
+			      unset($arrHead['scripts'][$key]);
+			  }
+	  	    }	
+			$document->setHeadData($arrHead);
+	    }
+	}
 	
 	function onAfterRoute() {
 		if(JFactory::getApplication()->isAdmin()) {

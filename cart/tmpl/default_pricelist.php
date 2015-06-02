@@ -21,7 +21,7 @@
 
 
 // Check to ensure this file is included in Joomla!
-$plugin=JPluginHelper::getPlugin('system','vmuikit_onepage');
+$plugin=JPluginHelper::getPlugin('system','onepage_generic');
 $params=new JRegistry($plugin->params);
 ?>
 <script type="text/javascript"> 
@@ -110,9 +110,10 @@ update_form();
                </div>
 			       <div class="quantity opg-float-right opg-width-large-1-4 opg-width-small-3-6 opg-width-3-6 opg-text-left-small">
                     <div class="spacer" >
-                             <input type="text" title="<?php echo  JText::_('COM_VIRTUEMART_CART_UPDATE') ?>" class="quantity-input js-recalculate opg-form-small opg-text-center" size="2" maxlength="4" value="<?php echo $prow->quantity ?>" id='quantity_<?php echo $vmproduct_id; ?>' name="quantity[]"/>
+					         <input name="quantity" type="hidden" value="<?php echo $step ?>" />
+                             <input type="text" title="<?php echo  JText::_('COM_VIRTUEMART_CART_UPDATE') ?>" class="quantity-input js-recalculate opg-form-small opg-text-center" size="2" maxlength="4" value="<?php echo $prow->quantity ?>" id='quantity_<?php echo $vmproduct_id; ?>' name="quantityval[<?php echo $pkey; ?>]"/>
 									  
-				
+				            <input type="hidden" name="stock[<?php echo $pkey; ?>]" value="<?php echo $prow->product_in_stock; ?>" />  
                             <input type="hidden" name="view" value="cart" /> 
                             <input type="hidden" name="task" value="update" />
                             <input type="hidden" name="virtuemart_product_id[]" value="<?php echo $vmproduct_id;  ?>" />
@@ -137,13 +138,20 @@ update_form();
             <div class="bottom-row opg-grid">
                 <div class="opg-width-large-1-3 opg-width-small-1-2 opg-width-1-2 opg-text-left-small opg-hidden-small">
                     <div class="spacer">
-                        <div class="sku">
+                       <?php if($prow->product_sku != "")
+						 {
+						 ?>
+                        <div class="uk-text-small">
 							<?php echo JText::_('COM_VIRTUEMART_CART_SKU').': '.$prow->product_sku; ?>
                         </div>
-						<?php // Output Custom Attributes
-						if (!empty($prow->customfields)) { ?>
-							<?php } ?>
-
+						 <?php
+						 }
+						 if (!empty($prow->customfields)) 
+					 	 {
+						    $customfiledstext = $this->customfieldsModel->CustomsFieldCartDisplay($prow);
+							$customfiledstext = str_replace("<br />", "", $customfiledstext);
+							echo str_replace('<span', '<span class="uk-text-small" ', $customfiledstext);
+						 } ?>
                         <div class="cart-product-details">
 							<?php echo JHTML::link($prow->url, JText::_('COM_VIRTUEMART_PRODUCT_DETAILS')) ?>
                         </div>
@@ -360,7 +368,9 @@ update_form();
 	     echo '				<label class="' . $_field['name'] . '" for="' . $_field['name'] . '_field">' . "\n";
 	     echo '					' . $_field['title'] . ($_field['required'] ? ' *' : '') . "\n";
  	     echo '				</label>' ;
-	  	 $_field['formcode']=str_replace('<select','<select onchange="javascript:update_form(2);"',$_field['formcode']);
+		 $uptask = "'custom'";
+	     $replacetext = '<select onchange="javascript:update_form('.$uptask.');"';
+	  	 $_field['formcode']=str_replace('<select',$replacetext,$_field['formcode']);
 		 $_field['formcode']=str_replace('vm-chzn-select','',$_field['formcode']);
 		 echo $_field['formcode'];
 	  }
@@ -402,8 +412,9 @@ update_form();
 							echo '</td>';
 							if(count($this->helper->shipments_shipment_rates) > 1)
 							{
+							    $target = "{target:'#shipmentdiv'}";
 							    echo '<td id="shipchangediv" class="opg-width-1-4">';
-					            echo '<a class="opg-button opg-button-primary" href="#shipmentdiv" data-opg-modal>'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
+					            echo '<a class="opg-button opg-button-primary" href="#" data-opg-modal="'.$target.'">'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
 					 			echo '</td>';
 							}
 							echo '</tr></table>';
@@ -424,8 +435,9 @@ update_form();
 							echo '</td>';
 							if(count($this->helper->shipments_shipment_rates) > 1)
 							{
+							    $target = "{target:'#shipmentdiv'}";
 							    echo '<td id="shipchangediv" class="opg-width-1-4">';
-					            echo '<a class="opg-button opg-button-primary" href="#shipmentdiv" data-opg-modal>'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
+					            echo '<a class="opg-button opg-button-primary" href="#" data-opg-modal="'.$target.'">'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
 					 			echo '</td>';
 							}
 							echo '</tr></table>'; 
@@ -485,6 +497,8 @@ update_form();
 	     $paymenthideclass= "opg-hidden";
 	 }
    }
+   
+   
   ?>
    <div class="opg-width-1-1 opg-panel-box opg-margin-small-top <?php echo $paymenthideclass; ?>">
   
@@ -508,9 +522,10 @@ update_form();
 						    echo $tmpdis;
 							echo '</td>';
 							if(count($this->helper->getpayments()) > 1)
-							{
+							{  
+							    $target = "{target:'#paymentdiv'}";
 							    echo '<td id="paychangediv">';
-					            echo '<a class="opg-button opg-button-primary" href="#paymentdiv" data-opg-modal>'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
+					            echo '<a class="opg-button opg-button-primary" data-opg-modal="'.$target.'">'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
 					 			echo '</td>';
 							}
 							echo '</tr></table>'; 
@@ -533,8 +548,9 @@ update_form();
 							echo '</td>';
 							if(count($this->helper->getpayments()) > 1)
 							{
-							    echo '<td id="paychangediv" class="opg-width-1-4">';
-					            echo '<a class="opg-button opg-button-primary" href="#paymentdiv" data-opg-modal>'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
+							    $target = "{target:'#paymentdiv'}";
+							    echo '<td id="paychangediv" class="opg-width-1-4" >';
+					            echo '<a class="opg-button opg-button-primary" href="#" data-opg-modal="'.$target.'">'.JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_CHNAGE").'</a>';
 					 			echo '</td>';
 							}
 							echo '</tr></table>'; 
@@ -607,12 +623,17 @@ update_form();
 		 {
 		     $logindis = '';
 			 $logindiv = 'display:none;';
-		 
-		 echo '<div class="opg-width-1-1 opg-button-group " id="loginbtns" data-opg-button-radio>';
-		 echo '<a id="regbtn" href="javascript:void(0);"  onclick="changemode(2);" class="opg-button opg-width-1-2 opg-button-primary">'.JText::_("COM_VIRTUEMART_ORDER_REGISTER_GUEST_CHECKOUT").'</a>';
-	     echo '<a id="loginbtn" href="javascript:void(0);" onclick="changemode(1);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_LOGIN").'</a>';
-		 echo '</div>';
-		 echo '<hr />';
+			 if($params->get('show_onlyguest',0))
+			 {
+			 }
+			 else
+			 {
+				 echo '<div class="opg-width-1-1 opg-button-group " id="loginbtns" data-opg-button-radio>';
+				 echo '<a id="regbtn" href="javascript:void(0);"  onclick="changemode(2);" class="opg-button opg-width-1-2 opg-button-primary">'.JText::_("COM_VIRTUEMART_ORDER_REGISTER_GUEST_CHECKOUT").'</a>';
+			     echo '<a id="loginbtn" href="javascript:void(0);" onclick="changemode(1);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_LOGIN").'</a>';
+				 echo '</div>';
+				 echo '<hr />';
+		     }
 		 }
 		 
 		 
@@ -682,27 +703,42 @@ update_form();
    ?>
       <div class="opg-width-1-1 opg-margin-bottom" >
 	  <?php
-	  
       if(VmConfig::get('oncheckout_show_register') == 0)
 	  {
     
 	  }
 	  else if (VmConfig::get('oncheckout_only_registered') == 0)
 	   {
-   	   ?>
-	   <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
-		  <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i>Guest</a>
-		  <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i>Register</a> 
-      </div>
+	      if($params->get('show_onlyguest',0))
+		  {
+		   
+		  }
+		  else
+		  {
+	  	  ?>
+		   <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
+			  <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i>Guest</a>
+			  <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i>Register</a> 
+	      </div>
  	   <?php
+	      }
 	   }
 	   else
 	   {
-	   ?>
+	    if($params->get('show_onlyguest',0))
+		  {
+		   
+		  }
+		  else
+		  {
+  	      ?>
 		  <a id="regcheckout"  class="opg-button opg-button-primary"  href="javascript:void(0);"><i id="regicon" class="opg-icon-check opg-margin-small-right"></i>Register</a> 
- 	</div>
-	<?php
+		  <?php
+		  }
 	    } 
+		?>
+	  </div>
+	<?php	
 	}
 	?>
     <div class="opg-width-1-1"> 
@@ -738,6 +774,10 @@ update_form();
 
 	   <?php
 	   }
+	   if($params->get('show_onlyguest',0))
+	   {
+	     $regchecked = '';   
+	   }
 	   ?>
     
 	<label class="opg-text-small opg-hidden" > 
@@ -761,6 +801,10 @@ update_form();
 	{
 	  $disvar = "display:none;";
 	}
+	 if($params->get('show_onlyguest',0))
+	 {
+	     $disvar = 'display:none;';   
+	 }
 
 		$userFields=array('agreed','name','username','password','password2');
 		echo '<div id="div_billto">';
@@ -827,7 +871,10 @@ update_form();
 			}
 
 		    if($_field['name']=='zip') {
-		    	$_field['formcode']=str_replace('input','input onchange="javascript:update_form();"',$_field['formcode']);
+			     
+				$uptask = "'custom'";
+				$replacetext = 'input onchange="javascript:update_form('.$uptask.');"';
+		    	$_field['formcode']=str_replace('input', $replacetext ,$_field['formcode']);
 		    } 
 
 			else if($_field['name']=='virtuemart_country_id') {
@@ -867,7 +914,10 @@ update_form();
 	
 		  
      <div class="opg-width-1-1">
-		 <a id="shiptobutton" class="opg-button opg-width-1-1" href="#shiptopopup" data-opg-modal><i id="shiptoicon" style="display:none;" class="opg-icon opg-icon-check opg-margin-right"></i><?php echo JText::_('PLG_SYSTEM_VMUIKIT_CHANGE_SHIP_ADDRESS'); ?></a>
+	     <?php
+		  $target = "{target:'#shiptopopup'}";
+		  ?>
+		 <a id="shiptobutton" class="opg-button opg-width-1-1" href="#" data-opg-modal="<?php echo $target; ?>"><i id="shiptoicon" style="display:none;" class="opg-icon opg-icon-check opg-margin-right"></i><?php echo JText::_('PLG_SYSTEM_VMUIKIT_CHANGE_SHIP_ADDRESS'); ?></a>
 	 </div>
 	
 	
@@ -894,7 +944,7 @@ update_form();
 		   $shiptodisplay = "";
 		}
 	  ?> 
-      <input class="inputbox" class="opg-hidden" type="checkbox" name="STsameAsBT" checked="checked" id="STsameAsBT" value="1" onclick="set_st(this);"/>
+      <input class="inputbox opg-hidden" type="checkbox" name="STsameAsBT" checked="checked" id="STsameAsBT" value="1" onclick="set_st(this);"/>
 	  
 	  <?php
 		if(!empty($this->cart->STaddress['fields'])){
@@ -928,7 +978,9 @@ update_form();
 		  
 		
     if($_field['name']=='shipto_zip') {
-      	  $_field['formcode']=str_replace('input','input onchange="javascript:update_form();"',$_field['formcode']);
+	       $uptask = "'custom'";
+		  $replacetext = 'input onchange="javascript:update_form('.$uptask.');"';
+		  $_field['formcode']=str_replace('input', $replacetext ,$_field['formcode']);
 
     } 
 	else if($_field['name']=='customer_note') {
@@ -942,7 +994,9 @@ update_form();
     } else if($_field['name']=='shipto_virtuemart_state_id') {
 
     	$_field['formcode']=str_replace('id="virtuemart_state_id"','id="shipto_virtuemart_state_id"',$_field['formcode']);
-		    	$_field['formcode']=str_replace('<select','<select onchange="javascript:update_form();"',$_field['formcode']);
+		        $uptask = "'custom'";
+		        $replacetext = '<select onchange="javascript:update_form('.$uptask.');"';
+		    	$_field['formcode']=str_replace('<select',$replacetext,$_field['formcode']);
 				if($_field['required'])
 				{
 				  $_field['formcode']=str_replace('vm-chzn-select','required',$_field['formcode']);
