@@ -1582,6 +1582,27 @@ function submit_order() {
 	validator.attachToForm(document.id('table_shipto'));
 
 	var valid=true;
+	
+	<?php if(VmConfig::get('oncheckout_only_registered') == 1) { ?>
+	document.id('table_user').getElements('input').each(function(el) {
+
+		var cval=validator.validate(el);;
+		elementid = el.id;
+		
+		if(cval == false)
+		{
+		  jQuery("#"+elementid).addClass("opg-form-danger");
+		}
+		else
+		{
+		  jQuery("#"+elementid).removeClass("opg-form-danger");
+		}
+		
+
+		valid=valid && cval;
+
+	});
+	<?php }?>
 
 	document.id('table_billto').getElements('input').each(function(el) {
 
