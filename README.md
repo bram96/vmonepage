@@ -10,7 +10,7 @@ What is this?
 
 * A Generic Open Source One Page Checkout which goal is to work with ALL Joomla templates.
 
-Why us this?
+Why use this?
 ---------------------
 * Stripped down CSS and JS script to fit your chosen template
 * Quick installation (install plugin, enable and off you go)
