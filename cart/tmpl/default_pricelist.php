@@ -828,7 +828,7 @@ update_form();
 			}
 			else
 			{
-			 $_field['formcode']=str_replace('<input','<input placeholder="'.$_field['title'].'"' ,$_field['formcode']);
+			 $_field['formcode']=str_replace('<input','<input placeholder="'.$_field['title'].'"'. (VmConfig::get('oncheckout_only_registered') == 1 ? ' class="required"' : '') ,$_field['formcode']);
 			  $_field['formcode']=str_replace('size="30"','' ,$_field['formcode']);
 			}
 		    echo '				' . $_field['formcode'] . "\n";
