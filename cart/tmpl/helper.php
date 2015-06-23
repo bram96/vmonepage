@@ -247,7 +247,10 @@ class CartHelper {
 			if(is_array($items)) {
 				foreach($items as $item) {
 				    $tmptext = "";
+					
+					
 					$tmptext = strip_tags($item , '<span><input><img>');
+					$tmptext =  str_replace("error_div", "error_div opg-hidden ", $tmptext);
 					$tmptext =  str_replace("          /*  */                   Please enable JavaScript.        ", "", $tmptext);
 					$tmptext =  str_replace("/*", "", $tmptext);
 					$tmptext =  str_replace("*/", "", $tmptext);

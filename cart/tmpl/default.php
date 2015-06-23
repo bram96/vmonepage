@@ -1256,7 +1256,7 @@ function update_form(task,id,payment) {
 						    var s = inputstr.search("klarna-checkout-container"); 
 						   if(s > 0)
 						   {
-						      jQuery("#klarna-checkout-container").appendTo("#klarnadiv");
+						      //jQuery("#klarna-checkout-container").appendTo("#klarnadiv");
 						   }
 						   var n = inputstr.search("checked"); 
 						   if(n > 0)
@@ -1455,7 +1455,7 @@ function update_form(task,id,payment) {
 			     }
 			 }
 			 ?>
-			$("#klarnadiv").slideDown();
+			//$("#klarnadiv").slideDown();
 			$("#klarna-checkout-container").slideDown();
 			$('#otherpay_buttons').slideUp();
 			$('div.billto-shipto').slideUp();
@@ -1463,7 +1463,7 @@ function update_form(task,id,payment) {
 			$('div#other-things').slideUp();
 
 		} else {
-			$("#klarnadiv").slideUp();
+			//$("#klarnadiv").slideUp();
 			$("#klarna-checkout-container").slideUp();
 			$('#otherpay_buttons').slideDown();
 			$('div.billto-shipto').slideDown();
@@ -1473,7 +1473,7 @@ function update_form(task,id,payment) {
 	}
 	else
 	{
-	   jQuery("#klarnadiv").hide();
+	   //jQuery("#klarnadiv").hide();
 	}
 
 })(jQuery);
@@ -1604,7 +1604,9 @@ function submit_order() {
 	});
 	<?php }?>
 
+
 	document.id('table_billto').getElements('input').each(function(el) {
+	
 
 		var cval=validator.validate(el);;
 		elementid = el.id;
@@ -2131,7 +2133,7 @@ else
 					    </div>
 				 </section>
 
-			<a class="opg-link opg-text-small" href="#full-tos" data-opg-modal><?php echo JText::_('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED'); ?></a>
+			<a class="opg-link opg-text-small" style="cursor:pointer;" data-opg-modal="{target:'#full-tos'}"><?php echo JText::_('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED'); ?></a>
 		    <div id="full-tos" class="opg-modal">
 			  <div class="opg-modal-dialog opg-text-left">
 			        <a class="opg-modal-close opg-close"></a>

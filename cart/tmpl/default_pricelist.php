@@ -597,7 +597,6 @@ update_form();
 	  
 	   ?>
    </div>
-   <div id="klarnadiv" class="opg-panel-box opg-margin-top" style="display:none">
    <?php
    echo "<fieldset id='payments'>"; 
    foreach($this->helper->paymentplugins_payments as $payments) {
@@ -607,7 +606,6 @@ update_form();
     }
 	echo '</fieldset>';
    ?>
-   </div>
    <div id="otherpay_buttons" class="opg-panel-box opg-margin-top"> <!-- Panel Box Started -->
      
 	 <?php
@@ -717,8 +715,8 @@ update_form();
 		  {
 	  	  ?>
 		   <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
-			  <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i>Guest</a>
-			  <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i>Register</a> 
+			  <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST"); ?></a>
+			  <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_REGISTER"); ?></a> 
 	      </div>
  	   <?php
 	      }
@@ -732,7 +730,7 @@ update_form();
 		  else
 		  {
   	      ?>
-		  <a id="regcheckout"  class="opg-button opg-button-primary"  href="javascript:void(0);"><i id="regicon" class="opg-icon-check opg-margin-small-right"></i>Register</a> 
+		  <a id="regcheckout"  class="opg-button opg-button-primary"  href="javascript:void(0);"><i id="regicon" class="opg-icon-check opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_REGISTER"); ?></a> 
 		  <?php
 		  }
 	    } 
@@ -829,7 +827,7 @@ update_form();
 			else
 			{
 			 $_field['formcode']=str_replace('<input','<input placeholder="'.$_field['title'].'"'. (VmConfig::get('oncheckout_only_registered') == 1 ? ' class="required"' : '') ,$_field['formcode']);
-			  $_field['formcode']=str_replace('size="30"','' ,$_field['formcode']);
+			 $_field['formcode']=str_replace('size="30"','' ,$_field['formcode']);
 			}
 		    echo '				' . $_field['formcode'] . "\n";
 		    echo '			</td>' . "\n";
