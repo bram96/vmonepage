@@ -19,8 +19,13 @@ class plgSystemOnepage_generic extends JPlugin {
 	function __construct($config,$params) {
 		parent::__construct($config,$params);
 	}
+
 	function onBeforeCompileHead()
 	{
+	    $style = '.form-horizontal .control-label{width:250px; !important; }';
+		$document = JFactory::getDocument();
+		$document->addStyleDeclaration($style);
+		
 	   $_option = JRequest::getString('option');
 	   $_option = JRequest::getString('option');
 	   $_view = JRequest::getString('view');

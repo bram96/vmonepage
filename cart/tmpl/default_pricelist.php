@@ -141,7 +141,7 @@ update_form();
                        <?php if($prow->product_sku != "")
 						 {
 						 ?>
-                        <div class="uk-text-small">
+                        <div class="opg-text-small">
 							<?php echo JText::_('COM_VIRTUEMART_CART_SKU').': '.$prow->product_sku; ?>
                         </div>
 						 <?php
@@ -150,7 +150,7 @@ update_form();
 					 	 {
 						    $customfiledstext = $this->customfieldsModel->CustomsFieldCartDisplay($prow);
 							$customfiledstext = str_replace("<br />", "", $customfiledstext);
-							echo str_replace('<span', '<span class="uk-text-small" ', $customfiledstext);
+							echo str_replace('<span', '<span class="opg-text-small" ', $customfiledstext);
 						 } ?>
                         <div class="cart-product-details">
 							<?php echo JHTML::link($prow->url, JText::_('COM_VIRTUEMART_PRODUCT_DETAILS')) ?>
@@ -247,12 +247,12 @@ update_form();
 
 	 
 	 
-        <div class="product-subtotal  opg-grid opg-text-right" id="sales_pricedivfull">
+        <div class="product-subtotal  opg-grid opg-text-right" id="sales_pricefulldiv">
 		  <div class="price-type opg-width-large-3-4 opg-width-small-1-2 opg-width-1-2"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_PRICES_TOTAL').': '; ?></div>
             <div class="price-amount price-type opg-width-large-1-4 opg-width-small-1-2 opg-width-1-2" id="sales_price"><?php echo $this->currencyDisplay->createPriceDiv('salesPrice','', $this->cart->pricesUnformatted,true) ?></div>
             <div class="clear"></div>
         </div>
-		<div class="product-subtotal   opg-grid opg-text-right" id="shipmentdivfull">
+		<div class="product-subtotal   opg-grid opg-text-right" id="shipmentfulldiv">
 		  <div class="price-type opg-width-large-3-4 opg-width-small-1-2 opg-width-1-2">
 		          <?php echo JText::_('COM_VIRTUEMART_CART_SHIPPING').":"; ?>
 			</div>
@@ -260,7 +260,7 @@ update_form();
             <div class="clear"></div>
         </div>
 		
-         <div class="product-subtotal opg-width-1-1 opg-hidden" id="coupon_taxdivfull">
+         <div class="product-subtotal opg-width-1-1 opg-hidden" id="coupon_taxfulldiv">
 		  <div class="price-type opg-width-large-3-4 opg-width-small-1-2 opg-width-1-2">
 		          <?php echo JText::_('Coupon Tax').":"; ?>
 			</div>
@@ -315,8 +315,8 @@ update_form();
 	    <?php } ?>
 		
 		<?php if ( VmConfig::get('show_tax')) { ?>
-        <div class=" opg-grid opg-text-right">
-            <div class="price-type opg-width-large-3-4 opg-width-small-1-2 opg-width-1-2" id="total_taxfulldiv"><?php echo JText::_('COM_VIRTUEMART_CART_SUBTOTAL_TAX_AMOUNT').': ' ?></div>
+        <div class=" opg-grid opg-text-right" id="total_taxfulldiv">
+            <div class="price-type opg-width-large-3-4 opg-width-small-1-2 opg-width-1-2" ><?php echo JText::_('COM_VIRTUEMART_CART_SUBTOTAL_TAX_AMOUNT').': ' ?></div>
             <div class="price-amount opg-width-large-1-4 opg-width-small-1-2 opg-width-1-2" id="total_tax" ><?php echo $this->currencyDisplay->createPriceDiv('billTaxAmount','', $this->cart->pricesUnformatted['billTaxAmount'],true) ?></div>
             <div class="clear"></div>
         </div>
@@ -609,6 +609,12 @@ update_form();
    <div id="otherpay_buttons" class="opg-panel-box opg-margin-top"> <!-- Panel Box Started -->
      
 	 <?php
+	  $onlyguest =  $params->get('show_onlyguest',0);
+	  $activetab = 0;
+	  if(!$onlyguest)
+	  {
+	    $activetab = $params->get('activetab',0);
+	  }
 	  $user = JFactory::getUser();
 	  if($user->id == 0)	
 	  { 
@@ -621,17 +627,34 @@ update_form();
 		 {
 		     $logindis = '';
 			 $logindiv = 'display:none;';
-			 if($params->get('show_onlyguest',0))
+			 if($onlyguest)
 			 {
 			 }
-			 else
+			 else if($activetab == 1 || $activetab == 2 || $activetab == 0)
 			 {
 				 echo '<div class="opg-width-1-1 opg-button-group " id="loginbtns" data-opg-button-radio>';
 				 echo '<a id="regbtn" href="javascript:void(0);"  onclick="changemode(2);" class="opg-button opg-width-1-2 opg-button-primary">'.JText::_("COM_VIRTUEMART_ORDER_REGISTER_GUEST_CHECKOUT").'</a>';
-			     echo '<a id="loginbtn" href="javascript:void(0);" onclick="changemode(1);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_LOGIN").'</a>';
+	    		 echo '<a id="loginbtn" href="javascript:void(0);" onclick="changemode(1);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_LOGIN").'</a>';
 				 echo '</div>';
 				 echo '<hr />';
-		     }
+			 
+			 }
+			 else if($activetab == 3)
+			 {
+				 echo '<div class="opg-width-1-1 opg-button-group " id="loginbtns" data-opg-button-radio>';
+				 echo '<a id="regbtn" href="javascript:void(0);"  onclick="changemode(2);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_ORDER_REGISTER_GUEST_CHECKOUT").'</a>';
+	    		 echo '<a id="loginbtn" href="javascript:void(0);" onclick="changemode(1);" class="opg-button opg-width-1-2 opg-button-primary">'.JText::_("COM_VIRTUEMART_LOGIN").'</a>';
+				 echo '</div>';
+				 echo '<hr />';
+			 }
+			 else  if($activetab == 4)
+			 {
+			     echo '<div class="opg-width-1-1 opg-button-group " id="loginbtns" data-opg-button-radio>';
+				 echo '<a id="regbtn" href="javascript:void(0);"  onclick="changemode(2);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_ORDER_REGISTER_GUEST_CHECKOUT").'</a>';
+	    		 echo '<a id="loginbtn" href="javascript:void(0);" onclick="changemode(1);" class="opg-button opg-width-1-2">'.JText::_("COM_VIRTUEMART_LOGIN").'</a>';
+				 echo '</div>';
+				 echo '<hr />';
+			 }
 		 }
 		 
 		 
@@ -641,6 +664,18 @@ update_form();
         $logindis = '';
 		$logindiv = 'display:none;';
 	  }
+	  
+	  if($activetab == 3)
+	  {
+	    $logindis = '';
+		$logindiv = '';
+	  }
+      else if($activetab == 4)
+	  {
+	    $logindis = 'display:none;';
+		$logindiv = 'display:none;';
+	  }
+	  
 	  $user = JFactory::getUser();
 	  if (empty($this->url)){
 		$uri = JFactory::getURI();
@@ -693,7 +728,17 @@ update_form();
     <div id="payment" class="opg-hidden">
       <?php  echo $this->currencyDisplay->createPriceDiv('salesPricePayment','', $this->cart->pricesUnformatted['salesPricePayment'],false); ?>
     </div>
-<div class="billto-shipto">
+	<?php
+      if($activetab == 3)
+	  {
+	   $displayreg = 'display:none;';
+	  }
+	  else
+	  {
+	    $displayreg = "";
+	  }
+	?>
+<div class="billto-shipto" style="<?php echo $displayreg; ?>">
 
    <?php  
    if($user->id == 0) 
@@ -707,23 +752,43 @@ update_form();
 	  }
 	  else if (VmConfig::get('oncheckout_only_registered') == 0)
 	   {
-	      if($params->get('show_onlyguest',0))
+	      if($onlyguest)
 		  {
 		   
 		  }
-		  else
-		  {
+		  else if($activetab == 1)
+		 {
+		   ?>
+			 <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
+			   <a id="guestchekcout" class="opg-button opg-width-1-2" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST"); ?></a>
+		  	   <a id="regcheckout"  class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-icon-check opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_REGISTER"); ?></a> 
+      		</div>
+	 	   <?php
+		 
+		 }
+		 else if($activetab == 2)
+		 {
+		   ?>
+			 <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
+			   <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST"); ?></a>
+		  	   <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_REGISTER"); ?></a> 
+      		</div>
+	 	   <?php
+		 
+		 }
+		 else
+		 {
 	  	  ?>
-		   <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
-			  <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST"); ?></a>
-			  <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_REGISTER"); ?></a> 
-	      </div>
+			 <div class="opg-button-group opg-width-1-1" data-opg-button-radio="">
+			   <a id="guestchekcout" class="opg-button opg-width-1-2 opg-button-primary" onClick="changecheckout(1)" href="javascript:void(0);"><i id="guesticon" class="opg-icon-check opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST"); ?></a>
+		  	   <a id="regcheckout"  class="opg-button opg-width-1-2" onClick="changecheckout(2)" href="javascript:void(0);"><i id="regicon" class="opg-margin-small-right"></i><?php echo JText::_("PLG_SYSTEM_VMUIKIT_ONEPAGE_REGISTER"); ?></a> 
+      		</div>
  	   <?php
-	      }
+	     }
 	   }
 	   else
 	   {
-	    if($params->get('show_onlyguest',0))
+	    if($onlyguest)
 		  {
 		   
 		  }
@@ -738,6 +803,15 @@ update_form();
 	  </div>
 	<?php	
 	}
+	$hidetitles = "";
+    if($onlyguest)
+    {
+	  $hidetitles = "opg-hidden";	   
+    }
+	else if($activetab > 0)
+	{
+	  $hidetitles = "";	   
+	}
 	?>
     <div class="opg-width-1-1"> 
 	
@@ -748,22 +822,32 @@ update_form();
 	         
 	  		 if (VmConfig::get('oncheckout_only_registered') == 0)
 	  		 {
-	   	 	?>
-			<strong id="guesttitle" class="opg-h4 opg-margin-top opg-margin-bottom"><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST_CHECKOUT') ?></strong>
-			<strong id="regtitle" class="opg-h4 opg-margin-top opg-margin-bottom" style="display:none"><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_REG_CHECKOUT') ?></strong> 
-	   	 	<?php
+				 if($activetab == 1)
+				  {
+		   		 	  ?>
+					 <h4 id="guesttitle" class="opg-h4 opg-margin-top  <?php echo $hidetitles; ?>" style="display:none"><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST_CHECKOUT') ?></h4>
+					 <h4 id="regtitle" class="opg-h4 opg-margin-top  <?php echo $hidetitles; ?>" ><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_REG_CHECKOUT') ?></h4>
+		   	 		<?php
+			  	  }
+				  else
+				  {
+				     ?>
+				       <h4 id="guesttitle" class="opg-h4 opg-margin-top  <?php echo $hidetitles; ?>" ><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST_CHECKOUT') ?></h4>
+					   <h4 id="regtitle" class="opg-h4 opg-margin-top  <?php echo $hidetitles; ?>" style="display:none" ><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_REG_CHECKOUT') ?></h4>
+					<?php
+				  }
 	   		 }
 			 else if(VmConfig::get('oncheckout_show_register') == 0)
 			 {
 			 ?>
-			    <strong id="regtitle" class="opg-h4" style=""><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST_CHECKOUT') ?></strong>
+			    <strong id="regtitle" class="opg-h4" style="<?php echo $hidetitles; ?>"><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_GUEST_CHECKOUT') ?></strong>
 			 <?php
 			 }
 			 else
 			 {
 			 $regchecked = 'checked="checked"';
 		    ?>
-			    <strong id="regtitle" class="opg-h4" style=""><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_REG_CHECKOUT') ?></strong>
+			    <strong id="regtitle" class="opg-h4" style="<?php echo $hidetitles; ?>"><?php echo JText::_('PLG_SYSTEM_VMUIKIT_ONEPAGE_REG_CHECKOUT') ?></strong>
 	   <?php }
 	   }
 	   else
@@ -772,10 +856,18 @@ update_form();
 
 	   <?php
 	   }
-	   if($params->get('show_onlyguest',0))
+	   if($onlyguest)
 	   {
 	     $regchecked = '';   
 	   }
+	   else if($activetab == 1)
+		{
+		   $regchecked = 'checked="checked"';  
+		}
+		else if($activetab == 2)
+		{
+		   $regchecked = '';  
+		}
 	   ?>
     
 	<label class="opg-text-small opg-hidden" > 
@@ -799,10 +891,18 @@ update_form();
 	{
 	  $disvar = "display:none;";
 	}
-	 if($params->get('show_onlyguest',0))
+	 if($onlyguest)
 	 {
 	     $disvar = 'display:none;';   
 	 }
+	  else if($activetab == 1)
+		{
+		   $disvar = '';   
+		}
+		else if($activetab == 2)
+		{
+		   $disvar = 'display:none;';   
+		}
 
 		$userFields=array('agreed','name','username','password','password2');
 		echo '<div id="div_billto">';
@@ -876,14 +976,18 @@ update_form();
 		    } 
 
 			else if($_field['name']=='virtuemart_country_id') {
-			/*
+			
+				/*
 		    	$_field['formcode']=str_replace('<select','<select onchange="javascript:update_form();"',$_field['formcode']);
 				$_field['formcode']=str_replace('vm-chzn-select','',$_field['formcode']);
 				*/
 				
 		    } else if($_field['name']=='virtuemart_state_id') {
 			
-		    	$_field['formcode']=str_replace('<select','<select onchange="javascript:update_form();"',$_field['formcode']);
+		    	$uptask = "'custom'";
+		        $replacetext = '<select onchange="javascript:update_form('.$uptask.');"';
+		    	$_field['formcode']=str_replace('<select',$replacetext,$_field['formcode']);
+				
 				if($_field['required'])
 				{
 				  $_field['formcode']=str_replace('vm-chzn-select','required',$_field['formcode']);

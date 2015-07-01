@@ -7,7 +7,7 @@
         <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
         <authorEmail>support@vmuikit.com</authorEmail>
         <authorUrl>www.vmuikit.com</authorUrl>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
 		<description><![CDATA[ 
 	 <table class="table"><tr><td><a href="http://vmonepage.com"><img src="http://vmkco.com/images/logo_vmonepage.png"></a></td><td><h3>Onepage Generic successfully installed.</h3><hr>For more information and to download the latest FREE version of this One Page Checkout please visit <a target="_blank" href="http://vmonepage.com">http://vmonepage.com</a> </h4></td></tr></table>
 	  <table class="table"><tr><td><a href="http://vmkco.com"><img src="http://vmkco.com/images/klarna_logo_mini.png"></a></td><td style="vertical-align: middle;">Looking for Klarna Checkout module? Please visit <a target="_blank" href="http://www.vmkco.com">www.vmkco.com</a> for Free Klarna Checkout Enhanced plugin</td></tr></table>
@@ -52,6 +52,11 @@
 						</field>
 						
 						<field name="buttoncolour" type="color" label="Button Color" />
+						<field 	name="activetab" type="radio" class="btn-group btn-group-yesno" label="Active Tab" 	description="" default="0">							<option value="1">REGISTER</option>
+							<option value="2">GUEST</option>
+							<option value="3">LOGIN</option>
+							<option value="4">NONE</option>
+						</field>
 						
 
 	                </fieldset>

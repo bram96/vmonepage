@@ -1,39 +1,21 @@
 <?php
-
 /**
-
 *
- 
 * Layout for the shopping cart
-
-*
-
 * @package	VirtueMart
-
 * @subpackage Cart
-
 * @author Max Milbers
-
 *
 
 * @link http://www.virtuemart.net
-
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
-
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-
 * VirtueMart is free software. This version may have been modified pursuant
-
 * to the GNU General Public License, and as distributed it includes or
-
 * is derivative of works licensed under the GNU General Public License or
-
 * other free or open source software licenses.
-
 * @version $Id: cart.php 2551 2010-09-30 18:52:40Z milbo $
-
 */
-
 
 // Check to ensure this file is included in Joomla!
 
@@ -513,7 +495,8 @@ function changecheckout(val)
 	jQuery("#guesticon").addClass("opg-icon-check");
 	if(window.lastvalue == 2)
 	{
-	   jQuery("#register").click();
+	   jQuery('#register').attr('checked', false);
+	   toggle_register(false);
 	   window.lastvalue = 1;
 	}
     
@@ -529,35 +512,35 @@ function changecheckout(val)
 	 jQuery("#guesticon").removeClass("opg-icon-check");
 	 if(window.lastvalue == 1)
 	 {
-	   jQuery("#register").click();
+	   jQuery('#register').attr('checked', true);
+	   toggle_register(true);
 	   window.lastvalue = 2;
 	 }
   }
 }
-
 function changemode(val)
 {
   if(val == 1)
   {
     jQuery("#logindiv").slideDown();
-	jQuery("#loginbtn").addClass("opg-button-primary");
-	jQuery("#regbtn").removeClass("opg-button-primary");
+	jQuery("#loginbtn").addClass("uk-button-primary");
+	jQuery("#regbtn").removeClass("uk-button-primary");
 	jQuery("#old_payments").slideUp();
+	jQuery(".billto-shipto").slideUp();
 	jQuery("#other-things").slideUp();
-    
   }
   if(val == 2)
   {
      jQuery("#logindiv").slideUp();
-	 jQuery("#loginbtn").removeClass("opg-button-primary");
-	 jQuery("#regbtn").addClass("opg-button-primary");
+	 jQuery("#loginbtn").removeClass("uk-button-primary");
+	 jQuery("#regbtn").addClass("uk-button-primary");
 	 jQuery("#old_payments").slideDown();
+	 jQuery(".billto-shipto").slideDown();
 	 jQuery("#other-things").slideDown();
 	 
 	 
   }
 }
-
 
 
 function set_coupon() {
@@ -906,12 +889,12 @@ function update_form(task,id,payment) {
 				
 				if(json.price.salesPrice != "")
 				{
-				    jQuery("sales_pricedivfull").show();
+				    jQuery("sales_pricefulldiv").show();
 					document.id('sales_price').set('text',json.price.salesPrice);
 			    }
 				else
 				{
-				   jQuery("sales_pricedivfull").hide();
+				   jQuery("sales_pricefulldiv").hide();
 				}
 
 				
@@ -924,12 +907,12 @@ function update_form(task,id,payment) {
 				
 				if(json.price.salesPriceShipment != "")
 				{
-				    jQuery("#shipmentdivfull").show();
+				    jQuery("#shipmentfulldiv").show();
 					document.id('shipment').set('text',json.price.salesPriceShipment);
 			    }
 				else
 				{
-				   jQuery("#shipmentdivfull").hide();
+				   jQuery("#shipmentfulldiv").hide();
 				}
 
 				
@@ -948,12 +931,13 @@ function update_form(task,id,payment) {
 				
 				   if(json.price.billTaxAmount != "")
 				   {
-				    jQuery("#total_taxdivfull").show();
+				    jQuery("#total_taxfulldiv").show();
 					document.id('total_tax').set('text',json.price.billTaxAmount);
 				   }
 				   else
 				   {
-				     jQuery("#total_taxdivfull").hide();
+				      document.id('total_tax').set('text',json.price.billTaxAmount);
+				     jQuery("#total_taxfulldiv").hide();
 				   }
 
 				<?php } ?>
@@ -962,26 +946,26 @@ function update_form(task,id,payment) {
 				
 				if(json.price.billDiscountAmount != "")
 				{
-				    jQuery("#total_amountdivfull").show();
+				    jQuery("#total_amountfulldiv").show();
 					document.id('total_amount').set('text',json.price.billDiscountAmount);
 			    }
 				else
 				{
-				   jQuery("#total_amountdivfull").hide();
+				   jQuery("#total_amountfulldiv").hide();
 				}
 				 
 				<?php } ?>
 				
 				if(json.price.billTotal != "")
 				{
-				    jQuery("#bill_totalamountdivfull").show();
+				    jQuery("#bill_totalamountfulldiv").show();
 					jQuery("#bottom_total").show();
 					document.id('bill_total').set('text',json.price.billTotal);
 					document.id('carttotal').set('text',json.price.billTotal);
 				}
 				else
 				{
-				    jQuery("#bill_totalamountdivfull").hide();
+				    jQuery("#bill_totalamountfulldiv").hide();
 					jQuery("#bottom_total").hide();
 				}
 				
@@ -2011,6 +1995,11 @@ else
 	  else
 	  {
 	    $logindis = '';
+	  }
+	  $activetab = $params->get('activetab',0);
+	  if($activetab == 3)
+	  {
+	    $logindis = 'display:none';
 	  }
 
 	?>
