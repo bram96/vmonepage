@@ -84,6 +84,8 @@ class CartHelper {
 		$nprice["couponCode"]=!empty($this->cart->couponCode)?$this->cart->couponCode:"";
 		$nprice["couponCode"]=(empty($nprice["couponCode"]) && !empty($this->cart->cartData["couponCode"]))?$this->cart->cartData["couponCode"]:$nprice["couponCode"];
 		$nprice["couponDescr"]=!empty($this->cart->cartData["couponDescr"])?$this->cart->cartData["couponDescr"]:"";
+		$nprice["billTotalunformat"]= $this->cart->pricesUnformatted["billTotal"];
+		
 		/*$nprice["taxAmount"]=!empty($price["taxAmount"])?$cdisp->priceDisplay($price["taxAmount"]):"";
 		$nprice["discountAmount"]=!empty($price["discountAmount"])?$cdisp->priceDisplay($price["discountAmount"]):"";
 		$nprice["salesPrice"]=!empty($price["salesPrice"])?$cdisp->priceDisplay($price["salesPrice"]):"";

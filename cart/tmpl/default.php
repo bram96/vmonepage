@@ -30,6 +30,13 @@ JHTML::stylesheet ( 'plugins/system/onepage_generic/onepage_generic.css');
 
 $taskRoute = "";
 
+$vendorModel = VmModel::getModel('vendor');
+$vendordata = $vendorModel->getVendor($this->cart->vendor->virtuemart_vendor_id);
+$vendorModel->addImages($this->vendor,1);
+if (VmConfig::get('enable_content_plugin', 0)) {
+		shopFunctionsF::triggerContentPlugin($vendordata, 'vendor','vendor_terms_of_service');
+}
+
 vmJsApi::jPrice();
 JHTML::script('plugins/system/onepage_generic/vmprices.js');
 require_once dirname(__FILE__).DS.'helper.php';
@@ -523,8 +530,8 @@ function changemode(val)
   if(val == 1)
   {
     jQuery("#logindiv").slideDown();
-	jQuery("#loginbtn").addClass("uk-button-primary");
-	jQuery("#regbtn").removeClass("uk-button-primary");
+	jQuery("#loginbtn").addClass("opg-button-primary");
+	jQuery("#regbtn").removeClass("opg-button-primary");
 	jQuery("#old_payments").slideUp();
 	jQuery(".billto-shipto").slideUp();
 	jQuery("#other-things").slideUp();
@@ -532,8 +539,8 @@ function changemode(val)
   if(val == 2)
   {
      jQuery("#logindiv").slideUp();
-	 jQuery("#loginbtn").removeClass("uk-button-primary");
-	 jQuery("#regbtn").addClass("uk-button-primary");
+	 jQuery("#loginbtn").removeClass("opg-button-primary");
+	 jQuery("#regbtn").addClass("opg-button-primary");
 	 jQuery("#old_payments").slideDown();
 	 jQuery(".billto-shipto").slideDown();
 	 jQuery("#other-things").slideDown();
@@ -962,6 +969,7 @@ function update_form(task,id,payment) {
 					jQuery("#bottom_total").show();
 					document.id('bill_total').set('text',json.price.billTotal);
 					document.id('carttotal').set('text',json.price.billTotal);
+					document.id('carttotalunformat').value = json.price.billTotalunformat;
 				}
 				else
 				{
@@ -1504,6 +1512,24 @@ function submit_order() {
 	<?php
 	}
 	?>
+	
+	minpurchase =  parseFloat(document.getElementById("minmumpurchase").value);
+	carttotalunformat  = parseFloat(document.getElementById("carttotalunformat").value);
+	
+	if(minpurchase > 0 )
+	{ 
+	  if(minpurchase > carttotalunformat)
+	  { 
+	   
+	    updatemsg = "<?php echo vmText::sprintf('COM_VIRTUEMART_CART_MIN_PURCHASE', $vendordata->vendor_min_pov); ?>";
+	    var r = '<div class="opg-alert opg-alert-warning" data-opg-alert><a href="" class="opg-alert-close opg-close"></a><p>' + updatemsg + "</p></div>";
+	    jQuery("#customerror").html("");
+	    jQuery("#customerror").show();
+	    jQuery("#customerror").html(r); 
+		window.location.hash ='cart_top';
+	    return false;
+	  }
+	}
 
 	var shipments_checked=false;
 
@@ -1642,6 +1668,11 @@ function submit_order() {
 
 		window.location.hash ='cart_top';
 
+		  errmessage = "<?php echo JText::_('COM_VIRTUEMART_CART_CHECKOUT_DATA_NOT_VALID'); ?>";
+	    var r = '<div class="opg-margin-small-top opg-alert opg-alert-warning" data-opg-alert><a href="" class="opg-alert-close opg-close"></a><p>' + errmessage + "</p></div>";
+	   jQuery("#customerror").html("");
+	   jQuery("#customerror").show();
+	   jQuery("#customerror").html(r);
 		return;
 
 	}
@@ -1738,6 +1769,12 @@ function submit_order() {
 		
 
 		if(!valid) {
+		
+		   errmessage = "<?php echo JText::_('COM_VIRTUEMART_CART_CHECKOUT_DATA_NOT_VALID'); ?>";
+		   var r = '<div class="opg-margin-small-top opg-alert opg-alert-warning" data-opg-alert><a href="" class="opg-alert-close opg-close"></a><p>' + errmessage + "</p></div>";
+		   jQuery("#customerror").html("");
+		   jQuery("#customerror").show();
+		   jQuery("#customerror").html(r);
 
 			window.location.hash='cart_top';
 
@@ -2117,7 +2154,7 @@ else
 
                 <section title=".squaredTwo">
 					    <div class="squaredTwo">
-						  <?php echo VmHtml::checkbox('tos',$this->cart->squaredTwo,1,0,'class="terms-of-service" id="squaredTwo"'); ?>
+						  <?php echo VmHtml::checkbox('tos',$this->cart->tos ,1,0,'class="terms-of-service" id="squaredTwo"'); ?>
 					      <label for="squaredTwo"></label>
 					    </div>
 				 </section>
@@ -2198,7 +2235,12 @@ else
 
 		<?php //vmdebug('my cart',$this->cart);// Continue and Checkout Button END ?>
 
-
+        <?php
+		if(isset($vendordata->vendor_min_pov))
+			{
+			  echo "<input type='hidden' name='minmumpurchase' id='minmumpurchase' value='".$vendordata->vendor_min_pov."'/>";
+		    }
+		?>
 
 		<!--<input type='hidden' name='task' value='<?php echo $this->checkout_task; ?>'/>-->
 
@@ -2206,7 +2248,7 @@ else
 
 		<input type='hidden' name='option' value='com_virtuemart'/>
 		
-
+	    <input type="hidden" name="carttotalunformat" id="carttotalunformat" value="" />
 		<input type='hidden' name='view' value='cart'/>
 	</div>
    </div>
