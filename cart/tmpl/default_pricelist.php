@@ -39,7 +39,7 @@ jQuery(this).attr('checked', false);
 
 	  }
    }
-update_form();
+update_form('custom');
 }
 </script>
 <style>
