@@ -677,6 +677,10 @@ update_form('custom');
 	  }
 	  
 	  $user = JFactory::getUser();
+	if($user->id) {
+	  	$logindis = '';
+	  	$logindiv = '';
+	  }
 	  if (empty($this->url)){
 		$uri = JFactory::getURI();
 		$url = $uri->toString(array('path', 'query', 'fragment'));
@@ -860,7 +864,7 @@ update_form('custom');
 	   {
 	     $regchecked = '';   
 	   }
-	   else if($activetab == 1)
+	   else if($activetab == 1 && $user->id == 0)
 		{
 		   $regchecked = 'checked="checked"';  
 		}
